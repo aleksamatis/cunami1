@@ -1,7 +1,9 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-type User = {
+import axios from 'axios'
+
+export type User = {
   id: number
   name: string
   username: string
@@ -19,11 +21,12 @@ type User = {
 }
 
 export const useUserStore = defineStore('users', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+  const users = ref<User[]>()
+
+  async function getUsers() {
+    const result = await axios.get('/api/users.json')
+    users.value = result.data
   }
 
-  return { count, doubleCount, increment }
+  return { users, getUsers }
 })
